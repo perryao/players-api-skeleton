@@ -82,7 +82,7 @@ describe('Player API', () => {
     });
   });
 
-  describe.only('GET /api/players', () => {
+  describe('GET /api/players', () => {
     beforeEach(async () => {
       await Player.destroy({ truncate: true, cascade: true });
     });
@@ -168,7 +168,7 @@ describe('Player API', () => {
 
   describe('DELETE /players/:id', () => {
     beforeEach(async () => {
-      await Player.remove({});
+      await Player.destroy({ truncate: true, cascade: true });
     });
 
     it('should fail if token not provided', done => {
@@ -176,7 +176,7 @@ describe('Player API', () => {
         .delete('/api/players/1')
         .end(err => {
           expect(err).to.exist;
-          expect(err.status).to.equal(403);
+          expect(err.status).to.equal(401); // Changed to 401
           done();
         });
     });
@@ -217,7 +217,7 @@ describe('Player API', () => {
     });
 
     it('should remove the player if successful', async () => {
-      let player = await Player.create(data.player);
+      let player = await Player.create(Object.assign({}, data.player, { user_id: user.id }));
       let res, error;
       try {
         res = await chai.request(server)

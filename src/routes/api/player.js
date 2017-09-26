@@ -34,7 +34,10 @@ router.post('/', wrap(async (req, res) => {
 
 router.delete('/:id', wrap(async (req, res) => {
     const playerId = req.params.id;
-    await Player.destroy({ where: { id: playerId, user_id: req.user.id }});
+    const rowsAffected = await Player.destroy({ where: { id: playerId, user_id: req.user.id }});
+    if (rowsAffected === 0) {
+        return res.status(404).send({ success: false });
+    }
     res.send({ success: true });
 }));
 

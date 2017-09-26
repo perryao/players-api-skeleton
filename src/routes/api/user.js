@@ -18,7 +18,7 @@ router.post('/', wrap(async (req, res) => {
         const userJson = user.toJSON();
         delete userJson.password;
         const token = issue({ id: user.id });
-        res.send({ success: true, token, user: userJson });
+        res.status(201).send({ success: true, token, user: userJson });
     } catch (err) {
         // email already exists
         if (err instanceof UniqueConstraintError) {
