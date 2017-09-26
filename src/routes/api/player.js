@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { check, validationResult } = require('express-validator/check');
 const { UniqueConstraintError } = require('sequelize');
 const { isAuthenticated } = require('../../util/auth');
 const wrap = require('../../util/wrap');
@@ -17,8 +18,19 @@ router.get('/', wrap(async (req, res) => {
     res.send({ success: true, players });
 }));
 
-router.post('/', wrap(async (req, res) => {
+const validators = [
+    check('first_name').exists(),
+    check('last_name').exists(),
+    check('rating').exists(),
+    check('handedness').exists(),
+];
+
+router.post('/', validators, wrap(async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()) {
+            return res.status(409).send({ succes: false });
+        }
         const user_id = req.user.id;
         const { first_name, last_name, rating, handedness } = req.body;
         const player = await Player.create({ first_name, last_name, rating, handedness, user_id });
