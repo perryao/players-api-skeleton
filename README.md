@@ -20,10 +20,25 @@ TL;DR:
 5. Win
 
 ## Tests
+Tests currently require a running postgres instance. To run tests locally, 
+first execute 
+
+```
+docker-compose up -d postgres
+```
+
+and then 
 
 ```
 npm test
 ```
+
+To run tests in a single command, execute
+```
+npm run test-compose
+```
+
+This will launch a postgres container and a nodejs container to run the tests in. Requires docker-compose
 
 ## User API
 

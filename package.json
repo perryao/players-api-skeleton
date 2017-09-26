@@ -10,6 +10,7 @@
     "dev": "nodemon -r dotenv/config --watch src --watch bin bin/www",
     "start": "node bin/www",
     "test": "mocha test/**/*.spec.js",
+    "test-compose": "docker-compose run --rm --service-ports app npm test",
     "lint": "eslint src && eslint test"
   },
   "author": "Steven White <steven@galchemy.codes>",

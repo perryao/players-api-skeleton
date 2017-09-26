@@ -1,5 +1,17 @@
 version: "3"
 services: 
+    app:
+        build: .
+        image: mikeperry/playersapiskeleton
+        command: ["npm", "start"]
+        depends_on:
+            - postgres
+        environment:
+            - DEBUG=players-api-skeleton:server
+            - CONNECTION_STRING=postgres://postgres:postgres@postgres:5432/postgres
+            - JWT_SECRET=mysecret
+        ports:
+            - "3000:3000"
     postgres:
         image: postgres:9.6
         restart: always
@@ -11,4 +23,3 @@ services:
             - ~/.players_api/postgres/data:/var/lib/postgresql/data
         ports:
             - "5432:5432"
-        image: "postgres:9.6"
