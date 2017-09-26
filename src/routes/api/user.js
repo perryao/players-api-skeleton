@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { Router } = require('express');
 const bcrypt = require('bcrypt');
 const { UniqueConstraintError } = require('sequelize');
@@ -13,11 +14,12 @@ router.post('/', validateUser, wrap(async (req, res) => {
         const { first_name, last_name, email, password, confirm_password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({ first_name, last_name, email, password: hashedPassword });
-        // TODO: must be a better way to hide password
-        const userJson = user.toJSON();
-        delete userJson.password;
         const token = issue({ id: user.id });
-        res.status(201).send({ success: true, token, user: userJson });
+        res.status(201).send({ 
+            token,
+            success: true, 
+            user: _.omit(user.toJSON(), ['password']),
+        });
     } catch (err) {
         // email already exists
         if (err instanceof UniqueConstraintError) {
