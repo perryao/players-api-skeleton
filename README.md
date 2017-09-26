@@ -49,7 +49,7 @@ A user consists of the following information:
 
 ```json
 {
-  "id": "<string>",
+  "id": "<number>",
   "first_name": "<string>",
   "last_name": "<string>",
   "email": "<string>"
