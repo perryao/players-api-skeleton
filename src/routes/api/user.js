@@ -17,8 +17,8 @@ router.post('/', validateUser, wrap(async (req, res) => {
         const token = issue({ id: user.id });
         res.status(201).send({ 
             token,
+            user,
             success: true, 
-            user: _.omit(user.toJSON(), ['password']),
         });
     } catch (err) {
         // email already exists

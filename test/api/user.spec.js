@@ -68,9 +68,9 @@ describe('User API', () => {
     });
   });
 
-  describe.skip('POST /api/login', () => {
+  describe('POST /api/login', () => {
     beforeEach(async () => {
-      await User.remove({});
+      await User.destroy({ truncate: true, cascade: true });
       await chai.request(server)
         .post('/api/user')
         .send(data.user);
@@ -107,7 +107,7 @@ describe('User API', () => {
           expect(res.status).to.equal(200);
           expect(res.body.success).to.be.true;
           expect(res.body.user).to.be.a('object');
-          expect(res.body.user.id).to.be.a('string');
+          expect(res.body.user.id).to.be.a('number');
           expect(res.body.token).to.be.a('string');
           done();
         });

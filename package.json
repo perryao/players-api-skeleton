@@ -38,6 +38,7 @@
     "normalize-port": "^1.0.0",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.0",
+    "passport-local": "^1.0.0",
     "pg": "^6.4.2",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.10.3"
