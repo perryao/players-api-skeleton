@@ -1,7 +1,7 @@
 /**
  * Setup test environment
  */
-require('dotenv').config({path: 'test.env'})
+require('dotenv').config({path: 'test.env'});
 const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');

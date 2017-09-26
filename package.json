@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "nodemon -r dotenv/config --watch src --watch bin bin/www",
     "start": "node bin/www",
-    "test": "mocha test/**/*.spec.js"
+    "test": "mocha test/**/*.spec.js",
+    "lint": "eslint src && eslint test"
   },
   "author": "Steven White <steven@galchemy.codes>",
   "license": "ISC",
