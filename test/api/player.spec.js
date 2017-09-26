@@ -8,7 +8,7 @@ let token, user;
 describe('Player API', () => {
 
   before(async () => {
-    await User.remove({});
+    await User.destroy({ truncate: true, cascade: true });
     const res = await chai.request(server)
       .post('/api/user')
       .send(data.user);
@@ -20,7 +20,7 @@ describe('Player API', () => {
 
   describe('POST /api/players', () => {
     beforeEach(async () => {
-      await Player.remove({});
+      await Player.destroy({ truncate: true, cascade: true });
     });
 
     it('should fail if token not provided', done => {
@@ -29,7 +29,7 @@ describe('Player API', () => {
         .send(data.player)
         .end(err => {
           expect(err).to.exist;
-          expect(err.status).to.equal(403);
+          expect(err.status).to.equal(401); //Changed to 401. see: https://en.wikipedia.org/wiki/HTTP_403
           done();
         });
     });
@@ -82,9 +82,9 @@ describe('Player API', () => {
     });
   });
 
-  describe('GET /api/players', () => {
+  describe.only('GET /api/players', () => {
     beforeEach(async () => {
-      await Player.remove({});
+      await Player.destroy({ truncate: true, cascade: true });
     });
 
     it('should fail if token not provided', done => {
@@ -92,7 +92,7 @@ describe('Player API', () => {
         .get('/api/players')
         .end(err => {
           expect(err).to.exist;
-          expect(err.status).to.equal(403);
+          expect(err.status).to.equal(401); //changed to 401. see: https://en.wikipedia.org/wiki/HTTP_403
           done();
         });
     });
@@ -116,8 +116,8 @@ describe('Player API', () => {
     });
 
     it('should deliver all players', async () => {
-      await Player.create(data.player);
-      await Player.create(data.player2);
+      await Player.create(Object.assign({}, data.player, { user_id: user.id }));
+      await Player.create(Object.assign({}, data.player2, { user_id: user.id }));
 
       let res, error;
       try {
@@ -135,7 +135,7 @@ describe('Player API', () => {
       expect(res.body.players).to.be.a('array');
       expect(res.body.players.length).to.equal(2);
 
-      res.body.players.forEach(player => expect(player.id).to.be.a('string'));
+      res.body.players.forEach(player => expect(player.id).to.be.a('number'));
     });
 
     it('should not deliver players created by other users', async () => {
@@ -143,8 +143,8 @@ describe('Player API', () => {
         .post('/api/user')
         .send(Object.assign({}, data.user, { email: 'seconduser@foo.com' }));
 
-      await Player.create(data.player);
-      await Player.create(Object.assign({}, data.player2, { created_by: userRes.body.user.id }));
+      await Player.create(Object.assign({}, data.player, { user_id: user.id }));
+      await Player.create(Object.assign({}, data.player2, { user_id: userRes.body.user.id }));
 
       let res, error;
       try {
@@ -162,7 +162,7 @@ describe('Player API', () => {
       expect(res.body.players).to.be.a('array');
       expect(res.body.players.length).to.equal(1);
 
-      res.body.players.forEach(player => expect(player.id).to.be.a('string'));
+      res.body.players.forEach(player => expect(player.id).to.be.a('number'));
     });
   });
 
